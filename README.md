@@ -13,4 +13,3 @@ Testing
 
 >>> we tested our encoder class by first turning the motor by hand and then by running the motor under power. 
 
->>> Our code returns 
