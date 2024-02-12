@@ -1,7 +1,5 @@
 """
 Created on Fri Feb  9 13:40:38 2024
-
-@author: andyjwaideh
 """
 import pyb
 import time
@@ -39,14 +37,15 @@ class Encoder:
         
         #initialize encoder pins
         self.enc_name = enc_name
-        self.pin1 = pyb.Pin(pyb.Pin.board.PC6, pyb.Pin.OUT_PP)
-        self.pin2 = pyb.Pin(pyb.Pin.board.PC7, pyb.Pin.OUT_PP)
+        self.pin1 = pyb.Pin(pin1, pyb.Pin.OUT_PP)
+        self.pin2 = pyb.Pin(pin2, pyb.Pin.OUT_PP)
         
         #initialize timer channels
         self.tim = pyb.Timer(8, prescaler=0, period=0xFFFF)
         self.ch1 = self.tim.channel(1, pyb.Timer.ENC_AB, pin=pin1) 
         self.ch2 = self.tim.channel(2, pyb.Timer.ENC_AB, pin=pin2)
         
+        #self.tim.counter(0) # set to zero when initialize
         
     def read(self):
         """
@@ -56,11 +55,15 @@ class Encoder:
          
          int: The current count of the encoder
         """        
-        
-        # Alia's code here
-        
-        
-        yield self.tim.counter()
+        while True:
+            # Alia's code here
+            # add delta to previous position
+            # 
+            print('words')
+            
+            self.counter_val = self.tim.counter()
+            yield self.counter_val # gives us current position
+            print('counter_val',self.counter_val)
         
     def zero(self):
         """
@@ -81,6 +84,9 @@ if __name__ == "__main__":
     
     #read_enc1 = enc1.read()
     read_enc2 = enc2.read()
+    #print('read_enc2',read_enc2)
+    
+    #read_enc2 = Encoder.read(4)
     
     
     # continues to read encoder values for testing until "Ctrl-C" is pressed
@@ -88,7 +94,9 @@ if __name__ == "__main__":
         try:
             #iterate class
             #next(read_enc1)
-            next(read_enc2)
+            print('loop')
+            next(read_enc2) # recalls defn, updates position with Alia code
+            print('at next')
             
             #make space between iterations
             print("")
