@@ -8,7 +8,7 @@ import time
 class Encoder:
     """!
      This class represents an incremental encoder connected to our
-     given microcontoller. Where we have the following attrivutes:
+     given microcontoller. Where we have the following attributes:
      
      enc_name : Is the name of the encoder
      pin1 (pyb.Pin): This pin is representing encoder channel A.
@@ -69,8 +69,9 @@ class Encoder:
                 
             # add up delta vals
             
-            self.counter_val = self.tim.counter()
-            print('counter_val before yield',self.counter_val)
+            self.counter_val = self.tim.counter() # counter_val
+            self.counter_val_prev = self.tim.counter()
+            print('counter_val before yield',self.counter_val_prev)
             yield self.counter_val # gives us current position
             print('counter_val after yield',self.counter_val)
         
