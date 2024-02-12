@@ -8,39 +8,78 @@ import time
 
 
 class Encoder:
+    """!
+     This class represents an incremental encoder connected to our
+     given microcontoller. Where we have the following attrivutes:
+     
+     enc_name : Is the name of the encoder
+     pin1 (pyb.Pin): This pin is representing encoder channel A.
+     
+     pin2 (pyb.Pin): This pin is representing encoder channel B.
+     
+     Timer (pyb.Timer): The timer used for the encoder counting.
+                        Using the manuel given for our board, we
+                        set timer 4 and timer 8 for our encoders.
+                        
+     @author Alia Wolken, Eduardo Santos, Andrew Jwaideh
+     """
     
     def __init__(self, enc_name, pin1, pin2, timer):
+        """
+        Here we initialize the Encoder Object. Where we have the
+        following:
+        
+        enc_name: The name given to the encoder
+        pin1 (int): The pin number for the first encoder channel.
+        pin2 (int): The pin number for the second encoder channel.
+        timer_num (int): The number of the timer to be used, in this
+                         lab we combined both AB to the same timer.
+        
+        """
         
         #initialize encoder pins
         self.enc_name = enc_name
-        self.pin1 = pyb.Pin(pin1, pyb.Pin.OUT_PP)
-        self.pin2 = pyb.Pin(pin2, pyb.Pin.OUT_PP)
+        self.pin1 = pyb.Pin(pyb.Pin.board.PC6, pyb.Pin.OUT_PP)
+        self.pin2 = pyb.Pin(pyb.Pin.board.PC7, pyb.Pin.OUT_PP)
         
         #initialize timer channels
-        self.tim = pyb.Timer(timer, prescaler=0, period=0xFFFF)
+        self.tim = pyb.Timer(8, prescaler=0, period=0xFFFF)
         self.ch1 = self.tim.channel(1, pyb.Timer.ENC_AB, pin=pin1) 
         self.ch2 = self.tim.channel(2, pyb.Timer.ENC_AB, pin=pin2)
         
         
     def read(self):
+        """
+         Reads the current count of the encoder.
+         
+         When it returns;
+         
+         int: The current count of the encoder
+        """        
         
         # Alia's code here
         
         
-        yield self.tim.count()
+        yield self.tim.counter()
         
     def zero(self):
-        
+        """
+         Resets the encoder back to zero.
+         
+         When it returns;
+         
+         int: The new count after resetting back to zero.
+        """       
         self.tim.counter(0)
-        yield self.tim.count()
+        yield self.tim.counter()
         
 
 if __name__ == "__main__":
 
-    enc1 = Encoder("enc1", pyb.Pin.board.PB6, pyb.Pin.board.PB7, 4)
+    #enc1 = Encoder("enc1", pyb.Pin.board.PB6, pyb.Pin.board.PB7, 4)
     enc2 = Encoder("enc2", pyb.Pin.board.PC6, pyb.Pin.board.PC7, 8)
     
-    read_enc1 = enc1.read()
+    #read_enc1 = enc1.read()
     read_enc2 = enc2.read()
     
     
@@ -48,7 +87,7 @@ if __name__ == "__main__":
     while True:
         try:
             #iterate class
-            next(read_enc1)
+            #next(read_enc1)
             next(read_enc2)
             
             #make space between iterations
