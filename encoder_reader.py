@@ -62,8 +62,8 @@ class Encoder:
             print('words')
             
             self.counter_val = self.tim.counter()
-            yield self.counter_val # gives us current position
             print('counter_val',self.counter_val)
+            yield self.counter_val # gives us current position
         
     def zero(self):
         """
