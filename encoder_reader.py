@@ -57,13 +57,23 @@ class Encoder:
         """        
         while True:
             # Alia's code here
-            # add delta to previous position
-            # 
+            # add delta (pos - prev_pos) to previous position
+            
             print('words')
+            # calculate delta in count
+            
+            # if delta > (AR+1)/2 :
+                # delta -= (AR+1) # underflow
+            
+            # if delta < (AR+1)/2 :
+                # delta += (AR+1) # overflow
+                
+            # add up delta vals
             
             self.counter_val = self.tim.counter()
-            print('counter_val',self.counter_val)
+            print('counter_val before yield',self.counter_val)
             yield self.counter_val # gives us current position
+            print('counter_val after yield',self.counter_val)
         
     def zero(self):
         """
