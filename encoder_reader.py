@@ -41,7 +41,8 @@ class Encoder:
         self.pin2 = pyb.Pin(pin2, pyb.Pin.OUT_PP)
         
         #initialize timer channels
-        self.tim = pyb.Timer(8, prescaler=0, period=0xFFFF)
+        AR = 0xFFFF
+        self.tim = pyb.Timer(8, prescaler=0, period=AR) # period is AR, if just period w/out PS -> actual period in [s]
         self.ch1 = self.tim.channel(1, pyb.Timer.ENC_AB, pin=pin1) 
         self.ch2 = self.tim.channel(2, pyb.Timer.ENC_AB, pin=pin2)
         
@@ -57,9 +58,7 @@ class Encoder:
         """        
         while True:
             # Alia's code here
-            # add delta (pos - prev_pos) to previous position
-            
-            print('words')
+     
             # calculate delta in count
             
             # if delta > (AR+1)/2 :
