@@ -1,6 +1,8 @@
 import pyb
 import time
 
+# rename this file as main 
+
 from encoder_reader import Encoder
 
 def test_encoder(encoder):
