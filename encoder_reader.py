@@ -33,8 +33,7 @@ class Encoder:
         timer_num (int): The number of the timer to be used, in this
                          lab we combined both AB to the same timer.
         
-        """
-        
+        """   
         #initialize encoder pins
         self.enc_name = enc_name
         self.pin1 = pyb.Pin(pin1, pyb.Pin.OUT_PP)
@@ -42,11 +41,11 @@ class Encoder:
         
         #initialize timer channels
         AR = 0xFFFF
-        self.tim = pyb.Timer(8, prescaler=0, period=AR) # period is AR, if just period w/out PS -> actual period in [s]
+        self.tim = pyb.Timer(timer, prescaler=0, period=AR) # period is AR, if just period w/out PS -> actual period in [s]
         self.ch1 = self.tim.channel(1, pyb.Timer.ENC_AB, pin=pin1) 
         self.ch2 = self.tim.channel(2, pyb.Timer.ENC_AB, pin=pin2)
         
-        #self.tim.counter(0) # set to zero when initialize
+        #self.tim.counter(0) # set to zero when initialize ?
         
     def read(self):
         """
@@ -91,11 +90,16 @@ class Encoder:
 
 if __name__ == "__main__":
 
-    #enc1 = Encoder("enc1", pyb.Pin.board.PB6, pyb.Pin.board.PB7, 4)
+    enc1 = Encoder("enc1", pyb.Pin.board.PB6, pyb.Pin.board.PB7, 4)
     enc2 = Encoder("enc2", pyb.Pin.board.PC6, pyb.Pin.board.PC7, 8)
     
+    state = 0
+    
+    S0_INIT = 0
+    S1_RUN = 1
+    
     #read_enc1 = enc1.read()
-    read_enc2 = enc2.read()
+    #read_enc2 = enc2.read()
     #print('read_enc2',read_enc2)
     
     #read_enc2 = Encoder.read(4)
@@ -104,10 +108,19 @@ if __name__ == "__main__":
     # continues to read encoder values for testing until "Ctrl-C" is pressed
     while True:
         try:
+            if (state == S0_INIT):
+                print('Init State')
+                state = S1_RUN
             #iterate class
             #next(read_enc1)
-            # 
-            # Encoder.read() 
+            elif (state == S1_RUN):
+                print('Run State')
+                 
+                read_enc1 = enc1.read()
+                read_enc2 = enc2.read()
+            else:
+                pass
+            
             print('loop')
             #next(read_enc2) # recalls defn, updates position with Alia code
             print('at next')
