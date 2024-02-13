@@ -70,8 +70,8 @@ class Encoder:
             
         # add up delta vals -> RETURN total elapsed encoder pos += delta val
 
+        # Previous code:
         self.counter_val = self.tim.counter() # counter_val
-        
         self.counter_val_prev = self.counter_val
         print('counter_val before yield',self.counter_val_prev)
         #yield self.counter_val # gives us current position
