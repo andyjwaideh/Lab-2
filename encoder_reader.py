@@ -45,7 +45,7 @@ class Encoder:
         self.ch1 = self.tim.channel(1, pyb.Timer.ENC_AB, pin=pin1) 
         self.ch2 = self.tim.channel(2, pyb.Timer.ENC_AB, pin=pin2)
         
-        #self.tim.counter(0) # set to zero when initialize ?
+        prev_enc_count = 0 # initially zero because no previous count
         
     def read(self):
         """
@@ -55,8 +55,11 @@ class Encoder:
          
          int: The current count of the encoder
         """        
+        self.counter_val = self.tim.counter() # counter_val
+        counter_val = self.counter_val # stored
         
         # Alia's code here
+        delta = counter_val - prev_enc_count
  
         # calculate delta in count -> RETURN previous counter val
         # RETURN TUPLE store delta val
@@ -72,9 +75,9 @@ class Encoder:
         # Previous code:
         self.counter_val = self.tim.counter() # counter_val
         self.counter_val_prev = self.counter_val
-        print('counter_val before yield',self.counter_val_prev)
+        #print('counter_val before yield',self.counter_val_prev)
         #yield self.counter_val # gives us current position
-        print('counter_val after yield',self.counter_val)
+        #print('counter_val after yield',self.counter_val)
         
     def zero(self):
         """
@@ -83,9 +86,9 @@ class Encoder:
          When it returns;
          
          int: The new count after resetting back to zero.
-        """       
+        """
+        prev_enc_count = counter_val # stores previous count 
         self.tim.counter(0)
-        #yield self.tim.counter()
         
 
 if __name__ == "__main__":
@@ -97,13 +100,7 @@ if __name__ == "__main__":
     
     S0_INIT = 0
     S1_RUN = 1
-    
-    #read_enc1 = enc1.read()
-    #read_enc2 = enc2.read()
-    #print('read_enc2',read_enc2)
-    
-    #read_enc2 = Encoder.read(4)
-    
+    S2_COUNT_RESET = 2
     
     # continues to read encoder values for testing until "Ctrl-C" is pressed
     while True:
@@ -115,15 +112,19 @@ if __name__ == "__main__":
             #next(read_enc1)
             elif (state == S1_RUN):
                 print('Run State')
-                 
-                read_enc1 = enc1.read()
-                read_enc2 = enc2.read()
-            else:
-                pass
+#                 read_enc1 = enc1.read()
+#                 read_enc2 = enc2.read()
+                read_enc1, read_enc2 = enc1.read(),  enc2.read() # return tuple
+                encoder_reading = (read_enc1, read_enc2)
+                state = S2_COUNT_RESET
+                
+           elif (state == S2_COUNT_RESET): # will reset encoder to zero every data collection
+               #reset_enc1 = enc1.zero()
+               #reset_enc2 = enc2.zero()
+               reset_enc1, reset_enc2 = enc1.zero(), enc2.zero()
             
-            print('loop')
-            #next(read_enc2) # recalls defn, updates position with Alia code
-            print('at next')
+           else:
+               pass
             
             #make space between iterations
             print("")
@@ -137,5 +138,4 @@ if __name__ == "__main__":
         
         
         
-    
-    
+    D
