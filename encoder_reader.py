@@ -3,7 +3,7 @@ Created on Fri Feb  9 13:40:38 2024
 """
 import pyb
 import time
-
+from main import motordriver
 
 class Encoder:
     """!
@@ -38,7 +38,7 @@ class Encoder:
         self.pin1 = pyb.Pin(pin1, pyb.Pin.OUT_PP)
         self.pin2 = pyb.Pin(pin2, pyb.Pin.OUT_PP)
         
-        #initialize timer channels
+        #initialize encoder timer channels
         self.AR = int(0xFFFF)
         self.tim = pyb.Timer(timer, prescaler=0, period=self.AR) # period is AR, if just period w/out PS -> actual period in [s]
         self.ch1 = self.tim.channel(1, pyb.Timer.ENC_AB, pin=pin1) 
@@ -54,7 +54,10 @@ class Encoder:
          Reads the current count of the encoder.
          
          Returns:
-         INSRT WORDS
+         current counter value
+         previous counter value
+         current delta value
+         total delta value
         """
         # In the meantime
         # This code below returns both encoder vals
@@ -62,6 +65,7 @@ class Encoder:
         self.delta = self.current_counter_val - self.previous_counter_val
         
         print('current counter val', self.current_counter_val)
+        print('prev counter val',self.previous_counter_val)
         print('delta val', self.delta)
         
         if self.delta >= (self.AR+1)/2:
@@ -76,11 +80,6 @@ class Encoder:
         
         print('delta total',self.delta_summed)
         
-        # total count
-        #self.total_count = self.previous_counter_val + self.current_counter_val
-        #print('total count',self.total_count)
-        
-        print('prev counter val',self.previous_counter_val)
         # save previous value
         self.previous_counter_val = self.current_counter_val
         
@@ -101,18 +100,37 @@ if __name__ == "__main__":
     enc1 = Encoder("enc1", pyb.Pin.board.PB6, pyb.Pin.board.PB7, 4)
     enc2 = Encoder("enc2", pyb.Pin.board.PC6, pyb.Pin.board.PC7, 8)
     
-    #M_Timer = pyb.Timer(3, frequency=1000) # 1000 Hz
+    moe = motordriver(pyb.Pin.board.PA10, pyb.Pin.board.PB4, pyb.Pin.board.PB5, 3)
     
-    
+    count = 0 
     # continues to read encoder values for testing until "Ctrl-C" is pressed
     while True:
         try:
-            #enc1.read()
-            #print('------')
-            enc2.read()
-            print('------------------')
-            time.sleep(1)
-         
+            if count <= 5: 
+            # read encoder vals as turn manually
+                enc1.read()
+                print('------')
+                enc2.read()
+                print('count',count)
+                print('------------------')
+                time.sleep(0.5)
+            
+            elif count > 5:    
+            # run motor and read encoder vals
+                # init motor time channels init-ed in motor_driver class
+                
+                # Drive the motor
+                moe.set_duty_cycle (-50)
+                # Wait for a certain duration (e.g., 5 seconds)
+                pyb.delay(5000)  # 5000 milliseconds = 5 seconds
+                # Stop the motor by setting the duty cycle to 0
+                moe.set_duty_cycle(0)
+                # Wait for a certain duration (e.g., 5 seconds)
+                pyb.delay(5000)  # 5000 milliseconds = 5 seconds
+                
+            
+            count += 1
+            
         # Trying to catch the "Ctrl-C" keystroke to break out
         # of the program cleanly
         except KeyboardInterrupt:
