@@ -3,7 +3,7 @@ Created on Fri Feb  9 13:40:38 2024
 """
 import pyb
 import time
-from main import motordriver
+from main import motordriver #<--- why is this imported from main?? should be "from motor_driver import motordriver"
 
 class Encoder:
     """!
@@ -102,9 +102,15 @@ if __name__ == "__main__":
     
     moe = motordriver(pyb.Pin.board.PA10, pyb.Pin.board.PB4, pyb.Pin.board.PB5, 3)
     
-    count = 0 
+    count = 0
+    
     # continues to read encoder values for testing until "Ctrl-C" is pressed
     while True:
+        
+        
+        #not sure why these if stamements are here
+        #would be advantages to keep reading the encoder while the motor is running
+        
         try:
             if count <= 5: 
             # read encoder vals as turn manually
