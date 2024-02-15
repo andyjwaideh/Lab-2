@@ -100,8 +100,8 @@ if __name__ == "__main__":
     enc1 = Encoder("enc1", pyb.Pin.board.PB6, pyb.Pin.board.PB7, 4)
     enc2 = Encoder("enc2", pyb.Pin.board.PC6, pyb.Pin.board.PC7, 8)
     
-    moe = motordriver(pyb.Pin.board.PA10, pyb.Pin.board.PB4, pyb.Pin.board.PB5, 3)
-    
+    #moe = motordriver(pyb.Pin.board.PA10, pyb.Pin.board.PB4, pyb.Pin.board.PB5, 3)
+    moe = motordriver (pyb.Pin.board.PC1, pyb.Pin.board.PA1, pyb.Pin.board.PA0, 5)
     count = 0
     
     # continues to read encoder values for testing until "Ctrl-C" is pressed
@@ -112,28 +112,39 @@ if __name__ == "__main__":
         #would be advantages to keep reading the encoder while the motor is running
         
         try:
-            if count <= 5: 
+            if count <= 10: 
             # read encoder vals as turn manually
                 enc1.read()
                 print('------')
                 enc2.read()
                 print('count',count)
                 print('------------------')
-                time.sleep(0.5)
+                time.sleep(0.1)
             
-            elif count > 5:    
+            elif count > 10 and count < 20:    
             # run motor and read encoder vals
                 # init motor time channels init-ed in motor_driver class
                 
                 # Drive the motor
-                moe.set_duty_cycle (-50)
-                # Wait for a certain duration (e.g., 5 seconds)
-                pyb.delay(5000)  # 5000 milliseconds = 5 seconds
-                # Stop the motor by setting the duty cycle to 0
-                moe.set_duty_cycle(0)
-                # Wait for a certain duration (e.g., 5 seconds)
-                pyb.delay(5000)  # 5000 milliseconds = 5 seconds
+                moe.set_duty_cycle (50)
                 
+                enc1.read()
+                print('------')
+                enc2.read()
+                print('count',count)
+                print('------------------')
+                time.sleep(0.1)
+            
+            elif count >= 20:
+                # Drive the motor
+                moe.set_duty_cycle (-50)
+               
+                enc1.read()
+                print('------')
+                enc2.read()
+                print('count',count)
+                print('------------------')
+                time.sleep(0.1)   
             
             count += 1
             
