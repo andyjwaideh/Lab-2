@@ -3,7 +3,7 @@ Created on Fri Feb  9 13:40:38 2024
 """
 import pyb
 import time
-from main import motordriver #<--- why is this imported from main?? should be "from motor_driver import motordriver"
+from motor_driver import motordriver
 
 class Encoder:
     """!
